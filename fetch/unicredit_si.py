@@ -11,6 +11,7 @@ from selenium import webdriver
 from selenium.common import exceptions
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import ui
+from selenium.webdriver.common.by import By
 
 import fetch.bank
 import model
@@ -61,17 +62,17 @@ class UnicreditBankSI(fetch.bank.Bank):
             except exceptions.NoSuchElementException:
                 raise fetch.FetchError('Login form not found.')
             # username_input = login_form.find_element_by_id('loginInputSelector')
-            username_input = login_form.findElement(By.xpath("//input[@placeholder='Vpišite ime']"))
+            username_input = browser.find_element_by_xpath("//input[@placeholder='Vpišite ime']")
             username_input.send_keys(username)
             logger.info('Sending user name %s...' % username)
-            submit_button = login_form.find_element_by_id('nextButton')
+            submit_button = browser.find_element_by_id('nextButton')
             submit_button.click()
             # password_input = login_form.find_element_by_id('pinInputSelector')
-            password_input = login_form.findElement(By.xpath("//input[@placeholder='Vpišite geslo']"))
+            password_input = browser.find_element_by_xpath("//input[@placeholder='Vpišite geslo']")
             password_input.send_keys(password)
             logger.info('Sending PIN %s...' % password)
             # submit_button = login_form.find_element_by_id('buttonlogin')
-            submit_button = login_form.By.xpath("//button[contains(.,'Vstop')]")
+            submit_button = browser.find_element_by_xpath("//button[contains(.,'Vstop')]")
             submit_button.click()
             self._wait_to_finish_loading()
 
@@ -355,7 +356,7 @@ class UnicreditBankSI(fetch.bank.Bank):
         # Disable waiting for elements to speed up the operation.
         browser.implicitly_wait(0)
 
-        overlay = lambda: browser.find_element_by_class_name('ajax_loading')
+        overlay = lambda: browser.find_element_by_class_name('react-spinner-loader-wrapper')
         fetch.wait_for_element_to_appear_and_disappear(overlay)
 
         browser.implicitly_wait(self._WEBDRIVER_TIMEOUT)
