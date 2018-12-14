@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class UnicreditBankSI(fetch.bank.Bank):
-    """Fetcher for Deutsche Kreditbank (http://www.dkb.de/).
+    """Fetcher for Unicredit Banka Slovenia (http://www.unicredit.si).
 
     The accounts for a user will be identified by the bank account number
     (digits) or the obfuscated credit card number (1234******5678).
@@ -86,10 +86,11 @@ class UnicreditBankSI(fetch.bank.Bank):
 
     def _is_logged_in(self):
         return fetch.is_element_present(
-                lambda: self._browser.find_element_by_link_text('Finanzstatus'))
+                lambda: self._browser.find_element_by_link_text('ODJAVA'))
 
     def logout(self):
-        self._browser.find_element_by_id('logout').click()
+        # self._browser.find_element_by_id('logout').click()
+        self._browser.find_element_by_link_text('ODJAVA').click()
         self._browser.quit()
         self._logged_in = False
         self._accounts = None
@@ -105,17 +106,20 @@ class UnicreditBankSI(fetch.bank.Bank):
         browser = self._browser
 
         logger.info('Loading accounts overview...')
-        browser.find_element_by_link_text('Finanzstatus').click()
+        browser.find_element_by_link_text('Osebni računi').click()
         self._wait_to_finish_loading()
 
-        account_rows = browser.find_elements_by_css_selector(
-                '.financialStatusModule tbody tr.mainRow')
+        account_rows = browser.find_elements_by_css_selector('.score-card-item')
+        # account_rows = browser.find_elements_by_css_selector(
+        #         '.financialStatusModule tbody tr.mainRow')
         self._accounts = []
         for account_row in account_rows:
             try:
-                cells = account_row.find_elements_by_tag_name('td')
-                name = cells[0].find_elements_by_tag_name('div')[1].text \
-                        .replace(' ', '')
+                cells = account_row.find_element_by_class_name('title-wrap')
+                # cells = account_row.find_elements_by_tag_name('td')
+                name = cells.find_element_by_tag_name('h3').text
+                # name = cells[0].find_elements_by_tag_name('div')[1].text \
+                #         .replace(' ', '')
                 unused_acc_type = cells[1].text
                 balance_date = self._parse_date(cells[2].text)
                 balance = self._parse_balance(cells[3].text)

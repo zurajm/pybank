@@ -6,6 +6,7 @@ Supported banks:
 * Deutsche Kreditbank http://www.dkb.de/
 * PostFinance http://www.postfinance.ch/
 * Interactive Brokers http://www.interactivebrokers.com/
+* Unicredit Banka Slovenija http://www.unicredit.si
 
 With inspiration from Jens Herrmann's web_bank.py (http://qoli.de).
 
@@ -21,12 +22,14 @@ import sys
 import fetch.dkb
 import fetch.ib
 import fetch.postfinance
+import fetch.unicredit_si
 import qif
 
 BANK_BY_NAME = {
     'dkb': fetch.dkb.DeutscheKreditBank,
     'interactivebrokers': fetch.ib.InteractiveBrokers,
     'postfinance': fetch.postfinance.PostFinance,
+    'unicredit_si': fetch.unicredit_si.UnicreditBankSI,
 }
 DATE_FORMAT = '%Y-%m-%d'
 INVALID_FILENAME_CHARACTERS_PATTERN = re.compile(r'[^a-zA-Z0-9-_.]')
